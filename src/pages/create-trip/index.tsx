@@ -1,13 +1,22 @@
 import { FormEvent, useState } from "react"
 
+import { AxiosError } from "axios";
 import { ConfirmTripModal } from "./confirm-trip-modal";
 import { DateRange } from "react-day-picker";
 import { DestinationAndDateStep } from "./steps/destination-and-date-step";
 import { InviteGuestsModal } from "./invite-guests-modal";
 import { InviteGuestsStep } from "./steps/invite-guests-step";
 import { api } from "../../lib/axios";
+import { getDisplayedDate } from "../../lib/displayedDate";
 import { useNavigate } from "react-router-dom";
 
+interface ErrorTripModal {
+    response: {
+        data: {
+            message: string;
+        }
+    }
+}
 export function CreateTripPage() {
     const [isGuestsInputOpen, setIsGuestsInputOpen] = useState(false);
     const [isGuestsModalOpen, setIsGuestsModalOpen] = useState(false);
@@ -70,19 +79,26 @@ export function CreateTripPage() {
         if (!ownerName || !ownerEmail) {
             return
         }
-        const response = await api.post("/trips", {
-            destination,
-            starts_at: new Date(eventStartAndEndDates.from),
-            ends_at: new Date(eventStartAndEndDates.to),
-            emails_to_invite: emailsToInvite,
-            owner_name: ownerName,
-            owner_email: ownerEmail
-        });
 
-        const { tripId } = response.data;
+        try {
+            const response = await api.post("/trips", {
+                destination,
+                starts_at: eventStartAndEndDates.from,
+                ends_at: eventStartAndEndDates.to,
+                emails_to_invite: emailsToInvite,
+                owner_name: ownerName,
+                owner_email: ownerEmail
+            });
+            const { tripId } = response.data;
 
-        navigate(`/trips/${tripId}`);
+            navigate(`/trips/${tripId}`);
+        } catch (err) {
+            alert(err.response.data.message);
+        }
     }
+    const displayedDate = eventStartAndEndDates?.from && eventStartAndEndDates.to
+        ? getDisplayedDate(eventStartAndEndDates.from, eventStartAndEndDates.to) :
+        "";
     return (
         <div className="h-screen flex items-center justify-center bg-pattern bg-no-repeat bg-center">
             <div className="max-w-3xl w-full px-6 text-center space-y-10">
@@ -133,6 +149,8 @@ export function CreateTripPage() {
                         createTrip={createTrip}
                         setOwnerName={setOwnerName}
                         setOwnerEmail={setOwnerEmail}
+                        destination={destination}
+                        dateOfTrip={displayedDate}
                     />
                 )
             }

@@ -4,6 +4,8 @@ import { Button } from "../../components/button";
 import { FormEvent } from "react";
 
 interface ConfirmTripModalProps {
+    destination: string;
+    dateOfTrip: string;
     closeConfirmTripModal: () => void;
     createTrip: (event: FormEvent<HTMLFormElement>) => void;
     setOwnerName: (name: string) => void;
@@ -13,7 +15,9 @@ export function ConfirmTripModal({
     closeConfirmTripModal,
     createTrip,
     setOwnerName,
-    setOwnerEmail
+    setOwnerEmail,
+    destination,
+    dateOfTrip,
 }: ConfirmTripModalProps) {
     return (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
@@ -27,8 +31,8 @@ export function ConfirmTripModal({
                     </div>
                     <p className="text-sm text-zinc-400">
                         Para concluir a criação da viagem para
-                        <span className="font-semibold text-zinc-100">Florianópolis, Brasil</span>,
-                        nas datas de <span className="font-semibold text-zinc-100">16 a 27 de Agosto de 2024 </span>
+                        <span className="font-semibold text-zinc-100"> {destination} </span>,
+                        nas datas de <span className="font-semibold text-zinc-100"> {dateOfTrip} </span>
                         preencha seus dados abaixo:
                     </p>
                 </div>

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import { Button } from "../../components/button";
 import { api } from "../../lib/axios";
-import { format } from "date-fns";
+import { getDisplayedDate } from "../../lib/displayedDate";
 import { useParams } from "react-router-dom";
 
 interface Trip {
@@ -22,7 +22,7 @@ export function DestinationAndDateHeader() {
     }, [tripId]);
 
     const displayedDate = trip ?
-        format(trip.starts_at, "d ' de ' LLL").concat(' até ').concat(format(trip.ends_at, "d ' de ' LLL"))
+        getDisplayedDate(trip.starts_at, trip.ends_at)
         :
         null;
     return (

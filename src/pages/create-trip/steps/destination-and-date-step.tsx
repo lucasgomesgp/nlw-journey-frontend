@@ -4,7 +4,8 @@ import { ArrowRight, Calendar, MapPin, Settings2, XIcon } from "lucide-react";
 import { DateRange, DayPicker } from "react-day-picker";
 
 import { Button } from "../../../components/button";
-import { format } from "date-fns";
+import { getDisplayedDate } from "../../../lib/displayedDate";
+import { ptBR } from "date-fns/locale"
 import { useState } from "react";
 
 interface DestinationAndDateStepProps {
@@ -33,15 +34,9 @@ export function DestinationAndDateStep({
     function closeDatePicker() {
         return setIsDatePickerOpen(false);
     }
-    const displayedDate = eventStartAndEndDates
-        &&
-        eventStartAndEndDates.from
-        &&
-        eventStartAndEndDates.to
-        ?
-        format(eventStartAndEndDates.from, "d ' de ' LLL").concat(' até ').concat(format(eventStartAndEndDates.to, "d ' de ' LLL"))
-        :
-        null;
+    const displayedDate = eventStartAndEndDates?.from && eventStartAndEndDates.to
+        ? getDisplayedDate(eventStartAndEndDates.from, eventStartAndEndDates.to) :
+        "";
     return (
         <div className="h-16  bg-zinc-900 px-4 rounded-xl flex items-center shadow-shape gap-3">
             <div className="flex items-center gap-2 flex-1">
@@ -74,6 +69,7 @@ export function DestinationAndDateStep({
                         </div>
                         <DayPicker
                             mode="range"
+                            locale={ptBR}
                             selected={eventStartAndEndDates}
                             onSelect={setEventStartAndEndDates}
                         />
